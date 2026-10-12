@@ -1,0 +1,19 @@
+name: CI
+on: [push, pull_request]
+permissions:
+  contents: read
+jobs:
+  test:
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, macos-latest]
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@f548e57e544e1ff5a4c46bf1e1b8685f8e4a348a
+      - uses: actions/setup-python@06da6279cdbca41027908073e81a4544dc79c06b
+        with:
+          python-version: '3.12'
+      - run: python3 -m py_compile tildeguard
+      - run: python3 -m unittest discover -s tests -v
+      - run: python3 tildeguard --json
